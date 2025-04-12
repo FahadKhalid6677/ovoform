@@ -6,8 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
 import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
+import { useRouter } from "next/navigation";
 
 const initialQuestions = {
   start: {
@@ -96,6 +95,7 @@ export default function Home() {
   const [currentQuestionKey, setCurrentQuestionKey] = useState<string>("start");
   const [formState, setFormState] = useState<{ [key: string]: any }>({});
   const currentQuestion = initialQuestions[currentQuestionKey] as Question;
+  const router = useRouter();
 
   const isExistingBusiness = formState.start === "Existing";
 
@@ -134,6 +134,9 @@ export default function Home() {
     setFormState({ ...formState, [currentQuestionKey]: answer });
     if (nextQuestionKey) {
       setCurrentQuestionKey(nextQuestionKey);
+    } else {
+      // Optionally, you can navigate to a different page or show a completion message
+      router.push("/results"); // Example: navigating to a results page
     }
   };
 
@@ -153,23 +156,6 @@ export default function Home() {
     switch (currentQuestion.type) {
       case "initial":
       case "multipleChoice":
-        return (
-          <div className="grid gap-4">
-            {currentQuestion.options?.map((option) => (
-              <Button
-                key={option}
-                variant="outline"
-                className={cn(
-                  "justify-start w-full",
-                  formState[currentQuestionKey] === option ? "bg-secondary text-secondary-foreground" : ""
-                )}
-                onClick={() => handleAnswer(option)}
-              >
-                {option}
-              </Button>
-            ))}
-          </div>
-        );
       case "singleChoice":
         return (
           <div className="grid gap-4">
@@ -183,17 +169,7 @@ export default function Home() {
                 )}
                 onClick={() => handleAnswer(option)}
               >
-                <Checkbox
-                  checked={formState[currentQuestionKey] === option}
-                  onCheckedChange={(checked) => {
-                    if (checked) {
-                      handleAnswer(option);
-                    }
-                  }}
-                />
-                <Label htmlFor={option} className="pl-2 w-full">
-                  {option}
-                </Label>
+                {option}
               </Button>
             ))}
           </div>
@@ -234,21 +210,12 @@ export default function Home() {
         <Progress value={progress} className="progress-animation" />
       </div>
 
-      <div className="flex flex-1 items-center justify-center p-4">
-        <div className="max-w-md w-full flex flex-row">
-          <div className="flex flex-col flex-1">
-            <div className="p-4">
-              <div className="text-lg font-semibold">{currentQuestion.question}</div>
-            </div>
-            <div className="p-4">{renderQuestionContent()}</div>
+      <div className="flex flex-1 flex-col items-center justify-center p-4">
+        <div className="max-w-md w-full flex flex-col">
+          <div className="p-4">
+            <div className="text-lg font-semibold">{currentQuestion.question}</div>
           </div>
-          <div className="hidden md:block w-1/3">
-            <img
-              src="https://picsum.photos/300/400" // Replace with your image URL
-              alt="Placeholder"
-              className="object-cover h-full rounded-r-lg"
-            />
-          </div>
+          <div className="p-4">{renderQuestionContent()}</div>
         </div>
       </div>
     </div>
