@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
 import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 const initialQuestions = {
   start: {
@@ -113,40 +114,35 @@ export default function Home() {
   const [currentQuestionKey, setCurrentQuestionKey] = useState<string>("start");
   const [formState, setFormState] = useState<{ [key: string]: any }>({});
   const currentQuestion = initialQuestions[currentQuestionKey] as Question;
-
-  // Determine the next question key based on the current question and the user's answer
-  const determineNextQuestion = (answer: string) => {
-    if (currentQuestion.next === null) {
-      return null; // End of the form
-    }
-
-    if (typeof currentQuestion.next === "string") {
-      return currentQuestion.next; // Simple next question
-    }
-
-    // Conditional next question based on the answer
-    if (typeof currentQuestion.next === "object") {
-      if (currentQuestion.next[answer]) {
-        return currentQuestion.next[answer];
-      } else {
-        return null;
-      }
-    }
-
-    return null;
-  };
-
+    const router = useRouter();
 
   const handleAnswer = (answer: string) => {
-    setFormState({ ...formState, [currentQuestionKey]: answer });
-    const nextQuestionKey = determineNextQuestion(answer);
+        const updatedFormState = { ...formState, [currentQuestionKey]: answer };
+        setFormState(updatedFormState);
 
-    if (nextQuestionKey) {
-      setCurrentQuestionKey(nextQuestionKey);
-    } else {
-      // Optionally, you can navigate to a different page or show a completion message
-      //router.push("/results"); // Example: navigating to a results page
-    }
+        let nextQuestionKey: string | null = null;
+
+        if (currentQuestion.next === null) {
+            // End of the form
+            // Optionally, you can navigate to a different page or show a completion message
+            //router.push("/results"); // Example: navigating to a results page
+            console.log("Form completed!", updatedFormState);
+        }
+        else if (typeof currentQuestion.next === "string") {
+            nextQuestionKey = currentQuestion.next; // Simple next question
+        }
+        else if (typeof currentQuestion.next === "object") {
+            if (currentQuestion.next[answer]) {
+                nextQuestionKey = currentQuestion.next[answer];
+            }
+        }
+
+        if (nextQuestionKey) {
+            setCurrentQuestionKey(nextQuestionKey);
+        } else {
+            // Handle the end of the questionnaire or an error
+            console.log('Questionnaire completed or error occurred.');
+        }
   };
 
   const handleBack = () => {
