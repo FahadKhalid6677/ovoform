@@ -58,7 +58,7 @@ const initialQuestions = {
     question: "What field do you need support in?",
     options: ["Financing 💸", "Marketing 📣", "Product Management 📦", "Branding ✨"],
     type: "multipleChoice",
-    next: null, // End of 'New' branch
+    next: "thankYou", // End of 'New' branch
   },
   existingCategory: {
     question: "What’s your business category?",
@@ -100,14 +100,19 @@ const initialQuestions = {
     question: "What is the biggest obstacle you are facing now?",
     options: ["Production 🏭", "Financing 💸", "Marketing 📣", "Competition ⚔️", "Employees 🧑‍💼"],
     type: "multipleChoice",
-    next: null, // End of 'Existing' branch
+    next: "thankYou", // End of 'Existing' branch
   },
+    thankYou: {
+        question: "Thank you for providing the information!",
+        type: "thankYou",
+        next: null,
+    }
 };
 
 interface Question {
   question: string;
   options?: string[];
-  type: "initial" | "multipleChoice" | "singleChoice" | "range" | "text";
+  type: "initial" | "multipleChoice" | "singleChoice" | "range" | "text" | "thankYou";
   next: string | { [key: string]: string } | null;
 }
 
@@ -116,7 +121,7 @@ const ThankYou = () => (
         <h2 className="text-2xl font-semibold mb-4">Thank you for providing the information!</h2>
         <p className="text-gray-600 mb-6 text-center">We appreciate you completing the questionnaire.</p>
         <Image
-            src="https://picsum.photos/400/200" // Replace with your actual image URL
+            src="https://picsum.photos/400/200"
             alt="Thank You"
             width={400}
             height={200}
@@ -146,7 +151,8 @@ export default function Home() {
             key === 'newProductionKnowledge' ||
             key === 'newBudget' ||
             key === 'newSellingPlatforms' ||
-            key === 'newSupportFields'
+            key === 'newSupportFields' ||
+            key === 'thankYou'
         );
     }, []);
 
@@ -159,7 +165,8 @@ export default function Home() {
             key === 'existingAudienceAge' ||
             key === 'existingValue' ||
             key === 'existingQualityControl' ||
-            key === 'existingObstacle'
+            key === 'existingObstacle' ||
+            key === 'thankYou'
         );
     }, []);
 
@@ -186,6 +193,7 @@ export default function Home() {
             //router.push("/results"); // Example: navigating to a results page
             console.log("Form completed!", updatedFormState);
             setIsFormComplete(true);
+            setCurrentQuestionKey("thankYou");
         }
         else if (typeof currentQuestion.next === "string") {
             nextQuestionKey = currentQuestion.next; // Simple next question
@@ -208,6 +216,7 @@ export default function Home() {
             // Handle the end of the questionnaire or an error
             console.log('Questionnaire completed or error occurred.');
             setIsFormComplete(true);
+            setCurrentQuestionKey("thankYou");
         }
   };
 
@@ -218,8 +227,8 @@ export default function Home() {
     }
   };
 
-    const newTotalQuestions = newQuestionKeys.length - 1;
-    const existingTotalQuestions = existingQuestionKeys.length - 1;
+    const newTotalQuestions = newQuestionKeys.length - 2;
+    const existingTotalQuestions = existingQuestionKeys.length - 2;
 
     const newCurrentQuestionIndex = useMemo(() => {
         return newQuestionKeys.indexOf(currentQuestionKey);
@@ -295,14 +304,30 @@ export default function Home() {
             }}>Next</Button>
           </div>
         );
+        case "thankYou":
+            return <ThankYou />;
       default:
         return <p>Unknown question type.</p>;
     }
   };
 
-      if (isFormComplete) {
-        return <ThankYou />;
-    }
+    const renderContent = () => {
+        if (currentQuestion.type === "thankYou") {
+            return <ThankYou />;
+        } else {
+            return (
+                <div className="flex flex-1 flex-col items-center justify-start p-4">
+                    <div className="max-w-md w-full flex flex-col">
+                        <div className="p-4">
+                            <div className="text-lg font-semibold">{currentQuestion.question}</div>
+                        </div>
+                        <div className="p-4">{renderQuestionContent()}</div>
+                    </div>
+                </div>
+            );
+        }
+    };
+
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -328,17 +353,7 @@ export default function Home() {
            </div>
 
       </div>
-
-      <div className="flex flex-1 flex-col items-center justify-start p-4">
-        <div className="max-w-md w-full flex flex-col">
-          <div className="p-4">
-            <div className="text-lg font-semibold">{currentQuestion.question}</div>
-          </div>
-          <div className="p-4">{renderQuestionContent()}</div>
-        </div>
-      </div>
+        {renderContent()}
     </div>
   );
 }
-
-
