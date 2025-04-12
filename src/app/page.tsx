@@ -126,7 +126,11 @@ export default function Home() {
 
     // Conditional next question based on the answer
     if (typeof currentQuestion.next === "object") {
-      return currentQuestion.next[answer] || null;
+      if (currentQuestion.next[answer]) {
+        return currentQuestion.next[answer];
+      } else {
+        return null;
+      }
     }
 
     return null;
@@ -231,5 +235,3 @@ export default function Home() {
     </div>
   );
 }
-
-
