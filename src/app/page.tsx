@@ -12,10 +12,10 @@ import Image from 'next/image';
 const Logo = () => (
     <div className="flex justify-center items-center p-4">
         <Image
-            src="/logo.png" // Path to your logo image
+            src="/563x336black.png" // Path to your logo image
             alt="VentureFlow Navigator Logo"
-            width={200} // Adjust as needed
-            height={50} // Adjust as needed
+            width={150} // Adjust as needed
+            height={40} // Adjust as needed
             priority
         />
     </div>
@@ -132,7 +132,13 @@ const ThankYou = () => (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4">
         <h2 className="text-2xl font-semibold mb-4">Thank you for providing the information!</h2>
         <p className="text-gray-600 mb-6 text-center">We appreciate you completing the questionnaire.</p>
-       
+        <Image
+            src="/563x336black.png" // Replace with your actual image URL
+            alt="Thank You"
+            width={400}
+            height={200}
+            priority
+        />
         <p className="text-sm mt-4 text-center">Stay tuned for updates and personalized recommendations!</p>
     </div>
 );
@@ -234,19 +240,19 @@ export default function Home() {
     const existingTotalQuestions = existingQuestionKeys.length - 2;
 
     const newCurrentQuestionIndex = useMemo(() => {
-        return newQuestionKeys.indexOf(currentQuestionKey);
+        return newQuestionKeys.indexOf(currentQuestionKey) -1 ;
     }, [currentQuestionKey, newQuestionKeys]);
 
     const existingCurrentQuestionIndex = useMemo(() => {
-        return existingQuestionKeys.indexOf(currentQuestionKey);
+        return existingQuestionKeys.indexOf(currentQuestionKey) -1 ;
     }, [currentQuestionKey, existingQuestionKeys]);
 
 
     const progress = useMemo(() => {
         if (formType === 'New 🚀') {
-            return ((newQuestionKeys.indexOf(currentQuestionKey)) / newTotalQuestions) * 100;
+            return ((newQuestionKeys.indexOf(currentQuestionKey) -1) / newTotalQuestions) * 100;
         } else if (formType === 'Existing 🏢') {
-            return ((existingQuestionKeys.indexOf(currentQuestionKey)) / existingTotalQuestions) * 100;
+            return ((existingQuestionKeys.indexOf(currentQuestionKey) -1) / existingTotalQuestions) * 100;
         } else {
             return 0;
         }
@@ -360,9 +366,9 @@ export default function Home() {
                     <Progress value={progress} className="progress-animation" />
                     <div className="text-sm text-muted-foreground">
                         {formType === 'New 🚀'
-                            ? `${newQuestionKeys.indexOf(currentQuestionKey)} / ${newTotalQuestions}`
+                            ? `${newCurrentQuestionIndex} / ${newTotalQuestions}`
                             : formType === 'Existing 🏢'
-                                ? `${existingQuestionKeys.indexOf(currentQuestionKey)} / ${existingTotalQuestions}`
+                                ? `${existingCurrentQuestionIndex} / ${existingTotalQuestions}`
                                 : ''}
                     </div>
                 </div>
