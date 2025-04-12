@@ -185,28 +185,31 @@ export default function Home() {
           </div>
         );
       case "range":
-            return (
-              <div className="grid gap-4">
-                <Slider
-                  defaultValue={[0]}
-                  max={500000}
-                  step={10000}
-                  onValueChange={(value) => {
-                    // Update the form state, but don't advance to the next question
-                    setFormState({ ...formState, [currentQuestionKey]: String(value[0]) });
-                  }}
-                  onMouseUp={() => {
-                    // Advance to the next question only when the user releases the mouse
-                    if (currentQuestion.next) {
-                      handleAnswer(formState[currentQuestionKey] || "0"); // Use the current value in formState
-                    }
-                  }}
-                />
-                <p className="text-sm text-muted-foreground">
-                  Selected Budget: {formState[currentQuestionKey] || 0} AED
-                </p>
-              </div>
-            );
+        return (
+          <div className="grid gap-4">
+            <Slider
+              defaultValue={[0]}
+              max={500000}
+              step={10000}
+              onValueChange={(value) => {
+                // Update the form state
+                setFormState({ ...formState, [currentQuestionKey]: String(value[0]) });
+              }}
+            />
+            <p className="text-sm text-muted-foreground">
+              Selected Budget: {formState[currentQuestionKey] || 0} AED
+            </p>
+            <Button onClick={() => {
+              // Only proceed if a value has been selected
+              if (formState[currentQuestionKey]) {
+                handleAnswer(formState[currentQuestionKey]);
+              } else {
+                // Optionally handle the case where no value is selected, e.g., show a message
+                console.log("Please select a budget value.");
+              }
+            }}>Next</Button>
+          </div>
+        );
       default:
         return <p>Unknown question type.</p>;
     }
