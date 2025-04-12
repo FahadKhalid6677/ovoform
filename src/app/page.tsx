@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
@@ -116,6 +116,36 @@ export default function Home() {
   const currentQuestion = initialQuestions[currentQuestionKey] as Question;
     const router = useRouter();
 
+    const formType = formState['start'];
+
+    const questionKeys = useMemo(() => {
+        if (formType === 'New') {
+            return Object.keys(initialQuestions).filter(key =>
+                key === 'start' ||
+                key === 'newMotive' ||
+                key === 'newBrandVision' ||
+                key === 'newStylePreference' ||
+                key === 'newProductionKnowledge' ||
+                key === 'newBudget' ||
+                key === 'newSellingPlatforms' ||
+                key === 'newSupportFields'
+            );
+        } else if (formType === 'Existing') {
+            return Object.keys(initialQuestions).filter(key =>
+                key === 'start' ||
+                key === 'existingCategory' ||
+                key === 'existingAge' ||
+                key === 'existingStrengths' ||
+                key === 'existingAudienceAge' ||
+                key === 'existingValue' ||
+                key === 'existingQualityControl' ||
+                key === 'existingObstacle'
+            );
+        } else {
+            return ['start'];
+        }
+    }, [formType]);
+
   const handleAnswer = (answer: string) => {
         const updatedFormState = { ...formState, [currentQuestionKey]: answer };
         setFormState(updatedFormState);
@@ -152,16 +182,17 @@ export default function Home() {
   };
 
   const handleBack = () => {
-    const questionKeys = Object.keys(initialQuestions);
     const currentIndex = questionKeys.indexOf(currentQuestionKey);
     if (currentIndex > 0) {
       setCurrentQuestionKey(questionKeys[currentIndex - 1]);
     }
   };
 
-  const totalQuestions = Object.keys(initialQuestions).length;
-  const currentQuestionIndex = Object.keys(initialQuestions).indexOf(currentQuestionKey);
-  const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+
+    const totalQuestions = questionKeys.length;
+    const currentQuestionIndex = questionKeys.indexOf(currentQuestionKey);
+    const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+
 
   useEffect(() => {
     console.log("Current Question Key:", currentQuestionKey);
