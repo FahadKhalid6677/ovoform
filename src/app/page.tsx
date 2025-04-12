@@ -7,6 +7,7 @@ import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { ChevronsLeft } from "lucide-react";
+import Image from 'next/image';
 
 const initialQuestions = {
   start: {
@@ -111,9 +112,19 @@ interface Question {
 }
 
 const ThankYou = () => (
-    <div className="flex flex-col items-center justify-center h-screen">
-        <h2 className="text-2xl font-semibold mb-4">Thank you!</h2>
-        <p className="text-gray-600">Thank you for completing the questionnaire.</p>
+    <div className="flex flex-col items-center justify-center h-screen bg-background text-foreground">
+        <h2 className="text-2xl font-semibold mb-4">Thank you for providing the information!</h2>
+        <p className="text-gray-600 mb-6">We appreciate you completing the questionnaire.</p>
+
+        <Image
+            src="https://picsum.photos/400/200" // Replace with your actual image URL
+            alt="Thank You"
+            width={400}
+            height={200}
+            className="rounded-md shadow-md"
+        />
+
+        <p className="text-sm mt-4">Stay tuned for updates and personalized recommendations!</p>
     </div>
 );
 
@@ -243,7 +254,7 @@ export default function Home() {
                 key={option}
                 variant="outline"
                 className={cn(
-                  "justify-start w-full h-16 font-bold",
+                  "justify-start w-full h-20 font-bold rounded-md",
                   "bg-muted text-foreground",
                   formState[currentQuestionKey] === option ? "bg-secondary text-secondary-foreground" : ""
                 )}
