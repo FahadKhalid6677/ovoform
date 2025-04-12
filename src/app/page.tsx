@@ -132,7 +132,13 @@ export default function Home() {
             nextQuestionKey = currentQuestion.next; // Simple next question
         }
         else if (typeof currentQuestion.next === "object") {
-            if (currentQuestion.next[answer]) {
+            if (updatedFormState['start'] === 'New' && currentQuestion.next[answer]) {
+                nextQuestionKey = currentQuestion.next[answer];
+            }
+             else if (updatedFormState['start'] === 'Existing' && currentQuestion.next[answer]) {
+                nextQuestionKey = currentQuestion.next[answer];
+            }
+             else if (currentQuestion.next[answer]) {
                 nextQuestionKey = currentQuestion.next[answer];
             }
         }
