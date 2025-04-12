@@ -314,7 +314,7 @@ export default function Home() {
 
       </div>
 
-      <div className="flex flex-1 flex-col items-center justify-center p-4">
+      <div className="flex flex-1 flex-col items-center justify-start p-4">
         <div className="max-w-md w-full flex flex-col">
           <div className="p-4">
             <div className="text-lg font-semibold">{currentQuestion.question}</div>
