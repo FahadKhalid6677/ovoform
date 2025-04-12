@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { ChevronsLeft } from "lucide-react";
 
 const initialQuestions = {
   start: {
@@ -292,14 +293,25 @@ export default function Home() {
     <div className="flex flex-col min-h-screen bg-background">
       {/* Progress Bar */}
       <div className="p-4">
-        <Progress value={progress} className="progress-animation" />
-           <div className="text-sm text-muted-foreground">
-           {formType === 'New 🚀'
-          ? `${newQuestionKeys.indexOf(currentQuestionKey)} / ${newTotalQuestions}`
-          : formType === 'Existing 🏢'
-            ? `${existingQuestionKeys.indexOf(currentQuestionKey)} / ${existingTotalQuestions}`
-            : ''}
-        </div>
+      <div className="flex items-center justify-between">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleBack}
+              disabled={currentQuestionKey === "start"}
+            >
+              <ChevronsLeft className="h-4 w-4" />
+            </Button>
+            <Progress value={progress} className="progress-animation" />
+             <div className="text-sm text-muted-foreground">
+             {formType === 'New 🚀'
+            ? `${newQuestionKeys.indexOf(currentQuestionKey)} / ${newTotalQuestions}`
+            : formType === 'Existing 🏢'
+              ? `${existingQuestionKeys.indexOf(currentQuestionKey)} / ${existingTotalQuestions}`
+              : ''}
+          </div>
+           </div>
+
       </div>
 
       <div className="flex flex-1 flex-col items-center justify-center p-4">
