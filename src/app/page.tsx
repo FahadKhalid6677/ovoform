@@ -13,7 +13,7 @@ import Image from 'next/image';
 const Logo = () => (
     <div className="flex justify-center items-center p-4">
         <Image
-            src="/ventureflow_logo.png" // Path to your logo image
+            src="/logo.png" // Path to your logo image
             alt="VentureFlow Navigator Logo"
             width={200} // Adjust as needed
             height={50} // Adjust as needed
@@ -134,7 +134,7 @@ const ThankYou = () => (
         <h2 className="text-2xl font-semibold mb-4">Thank you for providing the information!</h2>
         <p className="text-gray-600 mb-6 text-center">We appreciate you completing the questionnaire.</p>
         <Image
-            src="/thankyou.png"
+            src="https://picsum.photos/400/200" // Replace with your actual image URL
             alt="Thank You"
             width={400}
             height={200}
