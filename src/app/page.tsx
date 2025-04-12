@@ -4,41 +4,40 @@ import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
-import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
 const initialQuestions = {
   start: {
     question: "Do you have a business, or are you just starting out?",
-    options: ["Existing", "New"],
+    options: ["Existing 🏢", "New 🚀"],
     type: "initial",
     next: {
-      Existing: "existingCategory",
-      New: "newMotive",
+      "Existing 🏢": "existingCategory",
+      "New 🚀": "newMotive",
     },
   },
   newMotive: {
     question: "What is the main motive for starting your project?",
-    options: ["Passion Project", "Seasonal Opportunity", "Commercial Profit"],
+    options: ["Passion Project ❤️", "Seasonal Opportunity ☀️", "Commercial Profit 💰"],
     type: "multipleChoice",
     next: "newBrandVision",
   },
   newBrandVision: {
     question: "Do you have an idea or brand vision?",
-    options: ["Yes", "No"],
+    options: ["Yes ✅", "No ❌"],
     type: "singleChoice",
     next: "newStylePreference",
   },
   newStylePreference: {
     question: "What's your style preference?",
-    options: ["Elegant", "Classic", "Sports", "Modern"],
+    options: ["Elegant 🌸", "Classic 🏛️", "Sports 🏃", "Modern 🏢"],
     type: "multipleChoice",
     next: "newProductionKnowledge",
   },
   newProductionKnowledge: {
     question: "Do you have knowledge of production sources?",
-    options: ["Looking for help", "Yes", "No"],
+    options: ["Looking for help 🙋", "Yes ✅", "No ❌"],
     type: "singleChoice",
     next: "newBudget",
   },
@@ -49,55 +48,55 @@ const initialQuestions = {
   },
   newSellingPlatforms: {
     question: "Where do you intend to sell your products?",
-    options: ["Instagram", "Physical Store", "E-commerce Platforms", "Other Platforms"],
+    options: ["Instagram 📱", "Physical Store 🏬", "E-commerce Platforms 🌐", "Other Platforms ℹ️"],
     type: "multipleChoice",
     next: "newSupportFields",
   },
   newSupportFields: {
     question: "What field do you need support in?",
-    options: ["Financing", "Marketing", "Product Management", "Branding"],
+    options: ["Financing 💸", "Marketing 📣", "Product Management 📦", "Branding ✨"],
     type: "multipleChoice",
     next: null, // End of 'New' branch
   },
   existingCategory: {
     question: "What’s your business category?",
-    options: ["Women's Fashion", "Luxury Boutique", "Men's Fashion", "Children Fashion"],
+    options: ["Women's Fashion 👚", "Luxury Boutique 💎", "Men's Fashion 👔", "Children Fashion 🧸"],
     type: "singleChoice",
     next: "existingAge",
   },
   existingAge: {
     question: "How old is your business?",
-    options: ["Less than a year", "1–3 Years", "More than 5 years"],
+    options: ["Less than a year 👶", "1–3 Years 🌱", "More than 5 years 🏢"],
     type: "singleChoice",
     next: "existingStrengths",
   },
   existingStrengths: {
     question: "What are the strengths of your brand?",
-    options: ["Price", "Quality", "Design", "Customer Service"],
+    options: ["Price 💰", "Quality 💎", "Design 🎨", "Customer Service 🤝"],
     type: "multipleChoice",
     next: "existingAudienceAge",
   },
   existingAudienceAge: {
     question: "What's your audience age demographic?",
-    options: ["15–25", "26–35", "36–45", "45+"],
+    options: ["15–25 🧑‍🎓", "26–35 👩‍💼", "36–45 👩‍💼", "45+ 👵"],
     type: "singleChoice",
     next: "existingValue",
   },
   existingValue: {
     question: "What's the most important value you provide?",
-    options: ["Competitive price", "Sustainability", "Luxury", "Excellence"],
+    options: ["Competitive price 🏷️", "Sustainability ♻️", "Luxury 👑", "Excellence 🏆"],
     type: "singleChoice",
     next: "existingQualityControl",
   },
   existingQualityControl: {
     question: "How do you deal with quality problems in production?",
-    options: ["Select Service", "Intensive Quality Control"],
+    options: ["Select Service ✅", "Intensive Quality Control ⚙️"],
     type: "singleChoice",
     next: "existingObstacle",
   },
   existingObstacle: {
     question: "What is the biggest obstacle you are facing now?",
-    options: ["Production", "Financing", "Marketing", "Competition", "Employees"],
+    options: ["Production 🏭", "Financing 💸", "Marketing 📣", "Competition ⚔️", "Employees 🧑‍💼"],
     type: "multipleChoice",
     next: null, // End of 'Existing' branch
   },
@@ -155,9 +154,9 @@ export default function Home() {
     }, []);
 
   const questionKeys = useMemo(() => {
-        if (formType === 'New') {
+        if (formType === 'New 🚀') {
             return newQuestionKeys;
-        } else if (formType === 'Existing') {
+        } else if (formType === 'Existing 🏢') {
             return existingQuestionKeys;
         } else {
             return ['start'];
@@ -182,10 +181,10 @@ export default function Home() {
             nextQuestionKey = currentQuestion.next; // Simple next question
         }
         else if (typeof currentQuestion.next === "object") {
-            if (updatedFormState['start'] === 'New' && currentQuestion.next[answer]) {
+            if (updatedFormState['start'] === 'New 🚀' && currentQuestion.next[answer]) {
                 nextQuestionKey = currentQuestion.next[answer];
             }
-             else if (updatedFormState['start'] === 'Existing' && currentQuestion.next[answer]) {
+             else if (updatedFormState['start'] === 'Existing 🏢' && currentQuestion.next[answer]) {
                 nextQuestionKey = currentQuestion.next[answer];
             }
              else if (currentQuestion.next[answer]) {
@@ -209,22 +208,21 @@ export default function Home() {
     }
   };
 
-    const totalQuestions = questionKeys.length;
+    const newTotalQuestions = newQuestionKeys.length - 1;
+    const existingTotalQuestions = existingQuestionKeys.length - 1;
     const currentQuestionIndex = questionKeys.indexOf(currentQuestionKey);
 
     const progress = useMemo(() => {
-        if (formType === 'New') {
-            const newTotalQuestions = newQuestionKeys.length - 1; // Exclude 'start'
+        if (formType === 'New 🚀') {
             const newCurrentQuestionIndex = newQuestionKeys.indexOf(currentQuestionKey);
             return ((newCurrentQuestionIndex) / newTotalQuestions) * 100;
-        } else if (formType === 'Existing') {
-            const existingTotalQuestions = existingQuestionKeys.length - 1; // Exclude 'start'
+        } else if (formType === 'Existing 🏢') {
             const existingCurrentQuestionIndex = existingQuestionKeys.indexOf(currentQuestionKey);
             return ((existingCurrentQuestionIndex) / existingTotalQuestions) * 100;
         } else {
             return 0;
         }
-    }, [currentQuestionKey, formType, newQuestionKeys, existingQuestionKeys]);
+    }, [currentQuestionKey, formType, newQuestionKeys, existingQuestionKeys, newTotalQuestions, existingTotalQuestions]);
 
 
   useEffect(() => {
@@ -244,7 +242,8 @@ export default function Home() {
                 key={option}
                 variant="outline"
                 className={cn(
-                  "justify-start w-full",
+                  "justify-start w-full h-16 font-bold",
+                  "bg-muted text-foreground",
                   formState[currentQuestionKey] === option ? "bg-secondary text-secondary-foreground" : ""
                 )}
                 onClick={() => handleAnswer(option)}
@@ -291,19 +290,16 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      {/* Top Navigation */}
-      <div className="flex items-center justify-between p-4 border-b">
-        <Button variant="ghost" size="icon" onClick={handleBack} disabled={currentQuestionKey === "start"}>
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <div className="text-sm text-muted-foreground">
-          {formType === 'New' ? newQuestionKeys.indexOf(currentQuestionKey) : existingQuestionKeys.indexOf(currentQuestionKey)}/{formType === 'New' ? newQuestionKeys.length - 1 : existingQuestionKeys.length - 1}
-        </div>
-      </div>
-
       {/* Progress Bar */}
       <div className="p-4">
         <Progress value={progress} className="progress-animation" />
+           <div className="text-sm text-muted-foreground">
+           {formType === 'New 🚀'
+          ? `${newQuestionKeys.indexOf(currentQuestionKey)} / ${newTotalQuestions}`
+          : formType === 'Existing 🏢'
+            ? `${existingQuestionKeys.indexOf(currentQuestionKey)} / ${existingTotalQuestions}`
+            : ''}
+        </div>
       </div>
 
       <div className="flex flex-1 flex-col items-center justify-center p-4">
@@ -317,4 +313,3 @@ export default function Home() {
     </div>
   );
 }
-
