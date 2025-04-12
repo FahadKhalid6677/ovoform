@@ -112,9 +112,9 @@ interface Question {
 }
 
 const ThankYou = () => (
-    <div className="flex flex-col items-center justify-center h-screen bg-background text-foreground">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4">
         <h2 className="text-2xl font-semibold mb-4">Thank you for providing the information!</h2>
-        <p className="text-gray-600 mb-6">We appreciate you completing the questionnaire.</p>
+        <p className="text-gray-600 mb-6 text-center">We appreciate you completing the questionnaire.</p>
 
         <Image
             src="https://picsum.photos/400/200" // Replace with your actual image URL
@@ -124,7 +124,7 @@ const ThankYou = () => (
             className="rounded-md shadow-md"
         />
 
-        <p className="text-sm mt-4">Stay tuned for updates and personalized recommendations!</p>
+        <p className="text-sm mt-4 text-center">Stay tuned for updates and personalized recommendations!</p>
     </div>
 );
 
@@ -300,6 +300,25 @@ export default function Home() {
         return <ThankYou />;
     }
 
+  const showImage = useMemo(() => {
+    const currentIndex = questionKeys.indexOf(currentQuestionKey);
+    return currentIndex % 2 !== 0 && currentIndex !== 0 && currentQuestionKey !== 'newBudget';
+  }, [currentQuestionKey, questionKeys]);
+
+  const getImageSource = () => {
+        const currentIndex = questionKeys.indexOf(currentQuestionKey);
+        if (formType === 'New 🚀') {
+            if (currentIndex === 2) return 'https://i.picsum.photos/id/1005/5760/3840.jpg?hmac=2ac_dQtg_0n_E-ANdvjR1HJuwh-jWEOYwh9N4b6ZlNM';
+            if (currentIndex === 4) return 'https://i.picsum.photos/id/1011/5472/3648.jpg?hmac=KTHf8IZ2KqaSqHRwOIy12fkHwzYfq9efTczxIIqJCds';
+            if (currentIndex === 6) return 'https://i.picsum.photos/id/1015/6000/4000.jpg?hmac=aHjb0fIZeNyIQColsgc5Mc_JC0noKw96Jnuhh8exn6E';
+        } else if (formType === 'Existing 🏢') {
+            if (currentIndex === 2) return 'https://i.picsum.photos/id/0/5616/3744.jpg?hmac=3G9szOJknO08ODlsUcOxQBuNqJJ8DaKrqkenKdw6ugw';
+            if (currentIndex === 4) return 'https://i.picsum.photos/id/102/4300/2867.jpg?hmac=EEo9eQtBi2iUh1k0C0ssNwdEqgnO96f47MR6O0EQYjU';
+            if (currentIndex === 6) return 'https://i.picsum.photos/id/1019/5472/3648.jpg?hmac=cDY0BQtgVMNJcB70vQUeq3HLDDuJ9wvS6-CZxK46jUQ';
+        }
+        return null;
+    };
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* Progress Bar */}
@@ -326,6 +345,15 @@ export default function Home() {
       </div>
 
       <div className="flex flex-1 flex-col items-center justify-start p-4">
+      {showImage && (
+                <Image
+                    src={getImageSource() || "https://picsum.photos/400/200"}
+                    alt="Fashion Image"
+                    width={400}
+                    height={200}
+                    className="rounded-md shadow-md mb-4"
+                />
+            )}
         <div className="max-w-md w-full flex flex-col">
           <div className="p-4">
             <div className="text-lg font-semibold">{currentQuestion.question}</div>
