@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
 import { ChevronsLeft } from "lucide-react";
 import Image from 'next/image';
 
@@ -133,14 +132,7 @@ const ThankYou = () => (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4">
         <h2 className="text-2xl font-semibold mb-4">Thank you for providing the information!</h2>
         <p className="text-gray-600 mb-6 text-center">We appreciate you completing the questionnaire.</p>
-        <Image
-            src="https://picsum.photos/400/200" // Replace with your actual image URL
-            alt="Thank You"
-            width={400}
-            height={200}
-            className="rounded-md shadow-md"
-            priority
-        />
+       
         <p className="text-sm mt-4 text-center">Stay tuned for updates and personalized recommendations!</p>
     </div>
 );
@@ -152,7 +144,6 @@ export default function Home() {
     const [isFormComplete, setIsFormComplete] = useState(false);
 
     const currentQuestion = initialQuestions[currentQuestionKey] as Question;
-    const router = useRouter();
 
     const formType = formState['start'];
 
@@ -203,8 +194,6 @@ export default function Home() {
 
         if (currentQuestion.next === null) {
             // End of the form
-            // Optionally, you can navigate to a different page or show a completion message
-            //router.push("/results"); // Example: navigating to a results page
             console.log("Form completed!", updatedFormState);
             setIsFormComplete(true);
             setCurrentQuestionKey("thankYou");
@@ -302,6 +291,15 @@ export default function Home() {
                             onValueChange={(value) => {
                                 // Update the form state
                                 setFormState({ ...formState, [currentQuestionKey]: String(value[0]) });
+                            }}
+                            onMouseUp={() => {
+                                // Only proceed if a value has been selected
+                                if (formState[currentQuestionKey]) {
+                                    handleAnswer(formState[currentQuestionKey]);
+                                } else {
+                                    // Optionally handle the case where no value is selected, e.g., show a message
+                                    console.log("Please select a budget value.");
+                                }
                             }}
                         />
                         <p className="text-sm text-muted-foreground">
