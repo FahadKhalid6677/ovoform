@@ -110,41 +110,60 @@ interface Question {
   next: string | { [key: string]: string } | null;
 }
 
+const ThankYou = () => (
+    <div className="flex flex-col items-center justify-center h-screen">
+        <h2 className="text-2xl font-semibold mb-4">Thank you!</h2>
+        <p className="text-gray-600">Thank you for completing the questionnaire.</p>
+    </div>
+);
+
+
 export default function Home() {
   const [currentQuestionKey, setCurrentQuestionKey] = useState<string>("start");
   const [formState, setFormState] = useState<{ [key: string]: any }>({});
+    const [isFormComplete, setIsFormComplete] = useState(false);
+
   const currentQuestion = initialQuestions[currentQuestionKey] as Question;
     const router = useRouter();
 
     const formType = formState['start'];
 
-    const questionKeys = useMemo(() => {
+    const newQuestionKeys = useMemo(() => {
+        return Object.keys(initialQuestions).filter(key =>
+            key === 'start' ||
+            key === 'newMotive' ||
+            key === 'newBrandVision' ||
+            key === 'newStylePreference' ||
+            key === 'newProductionKnowledge' ||
+            key === 'newBudget' ||
+            key === 'newSellingPlatforms' ||
+            key === 'newSupportFields'
+        );
+    }, []);
+
+    const existingQuestionKeys = useMemo(() => {
+        return Object.keys(initialQuestions).filter(key =>
+            key === 'start' ||
+            key === 'existingCategory' ||
+            key === 'existingAge' ||
+            key === 'existingStrengths' ||
+            key === 'existingAudienceAge' ||
+            key === 'existingValue' ||
+            key === 'existingQualityControl' ||
+            key === 'existingObstacle'
+        );
+    }, []);
+
+  const questionKeys = useMemo(() => {
         if (formType === 'New') {
-            return Object.keys(initialQuestions).filter(key =>
-                key === 'start' ||
-                key === 'newMotive' ||
-                key === 'newBrandVision' ||
-                key === 'newStylePreference' ||
-                key === 'newProductionKnowledge' ||
-                key === 'newBudget' ||
-                key === 'newSellingPlatforms' ||
-                key === 'newSupportFields'
-            );
+            return newQuestionKeys;
         } else if (formType === 'Existing') {
-            return Object.keys(initialQuestions).filter(key =>
-                key === 'start' ||
-                key === 'existingCategory' ||
-                key === 'existingAge' ||
-                key === 'existingStrengths' ||
-                key === 'existingAudienceAge' ||
-                key === 'existingValue' ||
-                key === 'existingQualityControl' ||
-                key === 'existingObstacle'
-            );
+            return existingQuestionKeys;
         } else {
             return ['start'];
         }
-    }, [formType]);
+    }, [formType, newQuestionKeys, existingQuestionKeys]);
+
 
   const handleAnswer = (answer: string) => {
         const updatedFormState = { ...formState, [currentQuestionKey]: answer };
@@ -157,6 +176,7 @@ export default function Home() {
             // Optionally, you can navigate to a different page or show a completion message
             //router.push("/results"); // Example: navigating to a results page
             console.log("Form completed!", updatedFormState);
+            setIsFormComplete(true);
         }
         else if (typeof currentQuestion.next === "string") {
             nextQuestionKey = currentQuestion.next; // Simple next question
@@ -178,6 +198,7 @@ export default function Home() {
         } else {
             // Handle the end of the questionnaire or an error
             console.log('Questionnaire completed or error occurred.');
+            setIsFormComplete(true);
         }
   };
 
@@ -188,10 +209,22 @@ export default function Home() {
     }
   };
 
-
     const totalQuestions = questionKeys.length;
     const currentQuestionIndex = questionKeys.indexOf(currentQuestionKey);
-    const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+
+    const progress = useMemo(() => {
+        if (formType === 'New') {
+            const newTotalQuestions = newQuestionKeys.length - 1; // Exclude 'start'
+            const newCurrentQuestionIndex = newQuestionKeys.indexOf(currentQuestionKey);
+            return ((newCurrentQuestionIndex) / newTotalQuestions) * 100;
+        } else if (formType === 'Existing') {
+            const existingTotalQuestions = existingQuestionKeys.length - 1; // Exclude 'start'
+            const existingCurrentQuestionIndex = existingQuestionKeys.indexOf(currentQuestionKey);
+            return ((existingCurrentQuestionIndex) / existingTotalQuestions) * 100;
+        } else {
+            return 0;
+        }
+    }, [currentQuestionKey, formType, newQuestionKeys, existingQuestionKeys]);
 
 
   useEffect(() => {
@@ -236,7 +269,7 @@ export default function Home() {
             <p className="text-sm text-muted-foreground">
               Selected Budget: {formState[currentQuestionKey] || 0} AED
             </p>
-            <Button onClick={() => {
+             <Button onClick={() => {
               // Only proceed if a value has been selected
               if (formState[currentQuestionKey]) {
                 handleAnswer(formState[currentQuestionKey]);
@@ -252,6 +285,10 @@ export default function Home() {
     }
   };
 
+      if (isFormComplete) {
+        return <ThankYou />;
+    }
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* Top Navigation */}
@@ -260,7 +297,7 @@ export default function Home() {
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div className="text-sm text-muted-foreground">
-          {currentQuestionIndex + 1}/{totalQuestions}
+          {formType === 'New' ? newQuestionKeys.indexOf(currentQuestionKey) : existingQuestionKeys.indexOf(currentQuestionKey)}/{formType === 'New' ? newQuestionKeys.length - 1 : existingQuestionKeys.length - 1}
         </div>
       </div>
 
@@ -280,3 +317,4 @@ export default function Home() {
     </div>
   );
 }
+
