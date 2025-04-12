@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
@@ -13,75 +13,93 @@ const initialQuestions = {
     question: "Do you have a business, or are you just starting out?",
     options: ["Existing", "New"],
     type: "initial",
+    next: {
+      Existing: "existingCategory",
+      New: "newMotive",
+    },
   },
   newMotive: {
     question: "What is the main motive for starting your project?",
     options: ["Passion Project", "Seasonal Opportunity", "Commercial Profit"],
     type: "multipleChoice",
+    next: "newBrandVision",
   },
   newBrandVision: {
     question: "Do you have an idea or brand vision?",
     options: ["Yes", "No"],
     type: "singleChoice",
+    next: "newStylePreference",
   },
   newStylePreference: {
     question: "What's your style preference?",
     options: ["Elegant", "Classic", "Sports", "Modern"],
     type: "multipleChoice",
+    next: "newProductionKnowledge",
   },
   newProductionKnowledge: {
     question: "Do you have knowledge of production sources?",
     options: ["Looking for help", "Yes", "No"],
     type: "singleChoice",
+    next: "newBudget",
   },
   newBudget: {
     question: "What is the estimated budget for production (AED)?",
     type: "range",
+    next: "newSellingPlatforms",
   },
   newSellingPlatforms: {
     question: "Where do you intend to sell your products?",
     options: ["Instagram", "Physical Store", "E-commerce Platforms", "Other Platforms"],
     type: "multipleChoice",
+    next: "newSupportFields",
   },
   newSupportFields: {
     question: "What field do you need support in?",
     options: ["Financing", "Marketing", "Product Management", "Branding"],
     type: "multipleChoice",
+    next: null, // End of 'New' branch
   },
   existingCategory: {
     question: "What’s your business category?",
     options: ["Women's Fashion", "Luxury Boutique", "Men's Fashion", "Children Fashion"],
     type: "singleChoice",
+    next: "existingAge",
   },
   existingAge: {
     question: "How old is your business?",
     options: ["Less than a year", "1–3 Years", "More than 5 years"],
     type: "singleChoice",
+    next: "existingStrengths",
   },
   existingStrengths: {
     question: "What are the strengths of your brand?",
     options: ["Price", "Quality", "Design", "Customer Service"],
     type: "multipleChoice",
+    next: "existingAudienceAge",
   },
   existingAudienceAge: {
     question: "What's your audience age demographic?",
     options: ["15–25", "26–35", "36–45", "45+"],
     type: "singleChoice",
+    next: "existingValue",
   },
   existingValue: {
     question: "What's the most important value you provide?",
     options: ["Competitive price", "Sustainability", "Luxury", "Excellence"],
     type: "singleChoice",
+    next: "existingQualityControl",
   },
   existingQualityControl: {
     question: "How do you deal with quality problems in production?",
     options: ["Select Service", "Intensive Quality Control"],
     type: "singleChoice",
+    next: "existingObstacle",
   },
   existingObstacle: {
     question: "What is the biggest obstacle you are facing now?",
     options: ["Production", "Financing", "Marketing", "Competition", "Employees"],
     type: "multipleChoice",
+    next: null, // End of 'Existing' branch
   },
 };
 
@@ -89,6 +107,7 @@ interface Question {
   question: string;
   options?: string[];
   type: "initial" | "multipleChoice" | "singleChoice" | "range" | "text";
+  next: string | { [key: string]: string } | null;
 }
 
 export default function Home() {
@@ -97,41 +116,29 @@ export default function Home() {
   const currentQuestion = initialQuestions[currentQuestionKey] as Question;
   const router = useRouter();
 
-  const isExistingBusiness = formState.start === "Existing";
-
-  const determineNextQuestion = () => {
-    if (currentQuestionKey === "start") {
-      return isExistingBusiness ? "existingCategory" : "newMotive";
+  // Determine the next question key based on the current question and the user's answer
+  const determineNextQuestion = (answer: any) => {
+    if (currentQuestion.next === null) {
+      return null; // End of the form
     }
 
-    if (isExistingBusiness) {
-      switch (currentQuestionKey) {
-        case "existingCategory": return "existingAge";
-        case "existingAge": return "existingStrengths";
-        case "existingStrengths": return "existingAudienceAge";
-        case "existingAudienceAge": return "existingValue";
-        case "existingValue": return "existingQualityControl";
-        case "existingQualityControl": return "existingObstacle";
-        default: return null;
-      }
-    } else {
-      switch (currentQuestionKey) {
-        case "newMotive": return "newBrandVision";
-        case "newBrandVision": return "newStylePreference";
-        case "newStylePreference": return "newProductionKnowledge";
-        case "newProductionKnowledge": return "newBudget";
-        case "newBudget": return "newSellingPlatforms";
-        case "newSellingPlatforms": return "newSupportFields";
-        default: return null;
-      }
+    if (typeof currentQuestion.next === "string") {
+      return currentQuestion.next; // Simple next question
     }
+
+    // Conditional next question based on the answer
+    if (typeof currentQuestion.next === "object") {
+      return currentQuestion.next[answer];
+    }
+
+    return null;
   };
 
-  const nextQuestionKey = determineNextQuestion();
-  const isFormComplete = nextQuestionKey === null;
 
   const handleAnswer = (answer: any) => {
     setFormState({ ...formState, [currentQuestionKey]: answer });
+    const nextQuestionKey = determineNextQuestion(answer);
+
     if (nextQuestionKey) {
       setCurrentQuestionKey(nextQuestionKey);
     } else {
@@ -151,6 +158,11 @@ export default function Home() {
   const totalQuestions = Object.keys(initialQuestions).length;
   const currentQuestionIndex = Object.keys(initialQuestions).indexOf(currentQuestionKey);
   const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+
+  useEffect(() => {
+    console.log("Current Question Key:", currentQuestionKey);
+    console.log("Form State:", formState);
+  }, [currentQuestionKey, formState]);
 
   const renderQuestionContent = () => {
     switch (currentQuestion.type) {
