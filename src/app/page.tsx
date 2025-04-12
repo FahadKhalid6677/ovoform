@@ -1,16 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { cn } from "@/lib/utils";
 import { ArrowLeft } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 const initialQuestions = {
   start: {
@@ -135,16 +132,12 @@ export default function Home() {
 
   const handleAnswer = (answer: any) => {
     setFormState({ ...formState, [currentQuestionKey]: answer });
-  };
-
-  const handleNext = () => {
     if (nextQuestionKey) {
       setCurrentQuestionKey(nextQuestionKey);
     }
   };
 
   const handleBack = () => {
-    // Basic back navigation
     const questionKeys = Object.keys(initialQuestions);
     const currentIndex = questionKeys.indexOf(currentQuestionKey);
     if (currentIndex > 0) {
@@ -159,7 +152,6 @@ export default function Home() {
   const renderQuestionContent = () => {
     switch (currentQuestion.type) {
       case "initial":
-      case "singleChoice":
       case "multipleChoice":
         return (
           <div className="grid gap-4">
@@ -168,12 +160,40 @@ export default function Home() {
                 key={option}
                 variant="outline"
                 className={cn(
-                  "justify-start",
+                  "justify-start w-full",
                   formState[currentQuestionKey] === option ? "bg-secondary text-secondary-foreground" : ""
                 )}
                 onClick={() => handleAnswer(option)}
               >
                 {option}
+              </Button>
+            ))}
+          </div>
+        );
+      case "singleChoice":
+        return (
+          <div className="grid gap-4">
+            {currentQuestion.options?.map((option) => (
+              <Button
+                key={option}
+                variant="outline"
+                className={cn(
+                  "justify-start w-full",
+                  formState[currentQuestionKey] === option ? "bg-secondary text-secondary-foreground" : ""
+                )}
+                onClick={() => handleAnswer(option)}
+              >
+                <Checkbox
+                  checked={formState[currentQuestionKey] === option}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      handleAnswer(option);
+                    }
+                  }}
+                />
+                <Label htmlFor={option} className="pl-2 w-full">
+                  {option}
+                </Label>
               </Button>
             ))}
           </div>
@@ -215,19 +235,12 @@ export default function Home() {
       </div>
 
       <div className="flex flex-1 items-center justify-center p-4">
-        <Card className="max-w-md w-full flex flex-row">
+        <div className="max-w-md w-full flex flex-row">
           <div className="flex flex-col flex-1">
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold">{currentQuestion.question}</CardTitle>
-            </CardHeader>
-            <CardContent>{renderQuestionContent()}</CardContent>
             <div className="p-4">
-              {nextQuestionKey ? (
-                <Button onClick={handleNext}>Next</Button>
-              ) : (
-                <Button>Submit</Button>
-              )}
+              <div className="text-lg font-semibold">{currentQuestion.question}</div>
             </div>
+            <div className="p-4">{renderQuestionContent()}</div>
           </div>
           <div className="hidden md:block w-1/3">
             <img
@@ -236,7 +249,7 @@ export default function Home() {
               className="object-cover h-full rounded-r-lg"
             />
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );
