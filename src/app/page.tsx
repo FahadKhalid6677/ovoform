@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { ArrowLeft } from "lucide-react";
 
 const initialQuestions = {
   start: {
@@ -143,7 +144,7 @@ export default function Home() {
   };
 
   const handleBack = () => {
-    // Basic back navigation (can be improved with a history stack)
+    // Basic back navigation
     const questionKeys = Object.keys(initialQuestions);
     const currentIndex = questionKeys.indexOf(currentQuestionKey);
     if (currentIndex > 0) {
@@ -151,51 +152,29 @@ export default function Home() {
     }
   };
 
-  const progress = (() => {
-    const questionKeys = Object.keys(initialQuestions);
-    const currentIndex = questionKeys.indexOf(currentQuestionKey);
-    return ((currentIndex + 1) / questionKeys.length) * 100;
-  })();
-
+  const totalQuestions = Object.keys(initialQuestions).length;
+  const currentQuestionIndex = Object.keys(initialQuestions).indexOf(currentQuestionKey);
+  const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
 
   const renderQuestionContent = () => {
     switch (currentQuestion.type) {
       case "initial":
       case "singleChoice":
+      case "multipleChoice":
         return (
-          <div className="grid gap-2">
+          <div className="grid gap-4">
             {currentQuestion.options?.map((option) => (
               <Button
                 key={option}
                 variant="outline"
-                className="justify-start"
+                className={cn(
+                  "justify-start",
+                  formState[currentQuestionKey] === option ? "bg-secondary text-secondary-foreground" : ""
+                )}
                 onClick={() => handleAnswer(option)}
               >
                 {option}
               </Button>
-            ))}
-          </div>
-        );
-      case "multipleChoice":
-        return (
-          <div className="grid gap-2">
-            {currentQuestion.options?.map((option) => (
-              <div key={option} className="flex items-center space-x-2">
-                <Checkbox
-                  id={option}
-                  checked={formState[currentQuestionKey]?.includes(option)}
-                  onCheckedChange={(checked) => {
-                    let newAnswers = formState[currentQuestionKey] || [];
-                    if (checked) {
-                      newAnswers = [...newAnswers, option];
-                    } else {
-                      newAnswers = newAnswers.filter((a: any) => a !== option);
-                    }
-                    handleAnswer(newAnswers.length ? newAnswers : undefined);
-                  }}
-                />
-                <Label htmlFor={option}>{option}</Label>
-              </div>
             ))}
           </div>
         );
@@ -219,25 +198,46 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2">
-      <Card className="w-full max-w-md space-y-4">
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold">{currentQuestion.question}</CardTitle>
-        </CardHeader>
-        <CardContent>{renderQuestionContent()}</CardContent>
-        <div className="px-4 pb-4">
-          <Progress value={progress} />
-          <div className="flex justify-between mt-2">
-            <Button variant="secondary" onClick={handleBack} disabled={currentQuestionKey === "start"}>
-              Back
-            </Button>
-            {nextQuestionKey && (
-              <Button onClick={handleNext}>Next</Button>
-            )}
-            {isFormComplete && <Button>Submit</Button>}
-          </div>
+    <div className="flex flex-col min-h-screen bg-background">
+      {/* Top Navigation */}
+      <div className="flex items-center justify-between p-4 border-b">
+        <Button variant="ghost" size="icon" onClick={handleBack} disabled={currentQuestionKey === "start"}>
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <div className="text-sm text-muted-foreground">
+          {currentQuestionIndex + 1}/{totalQuestions}
         </div>
-      </Card>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="p-4">
+        <Progress value={progress} className="progress-animation" />
+      </div>
+
+      <div className="flex flex-1 items-center justify-center p-4">
+        <Card className="max-w-md w-full flex flex-row">
+          <div className="flex flex-col flex-1">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold">{currentQuestion.question}</CardTitle>
+            </CardHeader>
+            <CardContent>{renderQuestionContent()}</CardContent>
+            <div className="p-4">
+              {nextQuestionKey ? (
+                <Button onClick={handleNext}>Next</Button>
+              ) : (
+                <Button>Submit</Button>
+              )}
+            </div>
+          </div>
+          <div className="hidden md:block w-1/3">
+            <img
+              src="https://picsum.photos/300/400" // Replace with your image URL
+              alt="Placeholder"
+              className="object-cover h-full rounded-r-lg"
+            />
+          </div>
+        </Card>
+      </div>
     </div>
   );
 }
