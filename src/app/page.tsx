@@ -115,7 +115,7 @@ export default function Home() {
   const currentQuestion = initialQuestions[currentQuestionKey] as Question;
 
   // Determine the next question key based on the current question and the user's answer
-  const determineNextQuestion = (answer: any) => {
+  const determineNextQuestion = (answer: string) => {
     if (currentQuestion.next === null) {
       return null; // End of the form
     }
@@ -126,14 +126,14 @@ export default function Home() {
 
     // Conditional next question based on the answer
     if (typeof currentQuestion.next === "object") {
-      return currentQuestion.next[answer];
+      return currentQuestion.next[answer] || null;
     }
 
     return null;
   };
 
 
-  const handleAnswer = (answer: any) => {
+  const handleAnswer = (answer: string) => {
     setFormState({ ...formState, [currentQuestionKey]: answer });
     const nextQuestionKey = determineNextQuestion(answer);
 
@@ -191,7 +191,7 @@ export default function Home() {
               defaultValue={[0]}
               max={500000}
               step={10000}
-              onValueChange={(value) => handleAnswer(value[0])}
+              onValueChange={(value) => handleAnswer(String(value[0]))}
             />
             <p className="text-sm text-muted-foreground">
               Selected Budget: {formState[currentQuestionKey] || 0} AED
