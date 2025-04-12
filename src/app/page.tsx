@@ -6,7 +6,6 @@ import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
 import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
 
 const initialQuestions = {
   start: {
@@ -114,7 +113,6 @@ export default function Home() {
   const [currentQuestionKey, setCurrentQuestionKey] = useState<string>("start");
   const [formState, setFormState] = useState<{ [key: string]: any }>({});
   const currentQuestion = initialQuestions[currentQuestionKey] as Question;
-  const router = useRouter();
 
   // Determine the next question key based on the current question and the user's answer
   const determineNextQuestion = (answer: any) => {
@@ -143,7 +141,7 @@ export default function Home() {
       setCurrentQuestionKey(nextQuestionKey);
     } else {
       // Optionally, you can navigate to a different page or show a completion message
-      router.push("/results"); // Example: navigating to a results page
+      //router.push("/results"); // Example: navigating to a results page
     }
   };
 
@@ -233,4 +231,5 @@ export default function Home() {
     </div>
   );
 }
+
 
