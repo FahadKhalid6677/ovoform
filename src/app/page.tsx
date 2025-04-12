@@ -143,7 +143,7 @@ export default function Home() {
       setCurrentQuestionKey(nextQuestionKey);
     } else {
       // Optionally, you can navigate to a different page or show a completion message
-      router.push("/results"); // Example: navigating to a results page
+      router.push("/"); // Example: navigating to a results page
     }
   };
 
