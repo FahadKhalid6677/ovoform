@@ -90,3 +90,31 @@ body {
 .progress-animation {
   transition: width 0.5s ease-in-out;
 }
+
+.question-container {
+    @apply flex flex-col items-center justify-center p-4;
+}
+
+.question-text {
+    @apply text-2xl font-semibold mb-8 text-center;
+    font-family: var(--font-poppins);
+}
+
+.choices-container {
+    @apply grid gap-4 w-full max-w-md;
+}
+
+.choice-button {
+    @apply justify-start w-full h-20 font-bold rounded-md shadow-sm
+    bg-muted text-foreground hover:bg-accent hover:text-accent-foreground
+    transition-colors duration-200;
+    font-family: var(--font-poppins);
+}
+
+.choice-button:focus {
+    @apply ring-2 ring-primary ring-offset-1;
+}
+
+.selected-choice {
+    @apply bg-secondary text-secondary-foreground;
+}

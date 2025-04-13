@@ -7,6 +7,7 @@ import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import { ChevronsLeft } from "lucide-react";
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 // Logo component
 const Logo = () => (
@@ -270,15 +271,13 @@ export default function Home() {
             case "multipleChoice":
             case "singleChoice":
                 return (
-                    <div className="grid gap-4">
+                    <div className="choices-container">
                         {currentQuestion.options?.map((option) => (
                             <Button
                                 key={option}
-                                variant="outline"
                                 className={cn(
-                                    "justify-start w-full h-20 font-bold rounded-md",
-                                    "bg-muted text-foreground",
-                                    formState[currentQuestionKey] === option ? "bg-secondary text-secondary-foreground" : ""
+                                    "choice-button",
+                                    formState[currentQuestionKey] === option ? "selected-choice" : ""
                                 )}
                                 onClick={() => handleAnswer(option)}
                             >
@@ -375,15 +374,9 @@ export default function Home() {
             </div>
 
             {/* Question and Options */}
-            <div className="flex flex-col items-center justify-start p-4 flex-grow">
-                <div className="max-w-md w-full flex flex-col">
-                    <div className="p-4">
-                        <div className="text-lg font-semibold">{currentQuestion.question}</div>
-                    </div>
-                    <div className="p-4">
-                        {renderQuestionContent()}
-                    </div>
-                </div>
+             <div className="question-container">
+                <div className="question-text">{currentQuestion.question}</div>
+                {renderQuestionContent()}
             </div>
         </div>
     );
