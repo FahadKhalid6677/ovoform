@@ -128,15 +128,17 @@ interface Question {
     next: string | { [key: string]: string } | null;
 }
 
-const ThankYou = () => (
-    <div className="flex min-h-screen bg-background text-foreground items-center">
-        <div className="flex flex-col justify-center w-1/2 pr-8">
-            <h1 className="text-3xl font-bold mb-4">Great things are coming your way!</h1>
-            <p className="text-lg">We take everyone who fills out this information very seriously. You are our top priority. Our team is brainstorming for you as we speak. We will be in touch soon!</p>
+const ThankYou = () => {
+    return (
+        <div className="flex flex-col md:flex-row min-h-screen bg-background text-foreground items-center">
+            <div className="flex flex-col justify-center md:w-1/2 p-8 md:pr-8">
+                <h1 className="text-3xl font-bold mb-4">Great things are coming your way!</h1>
+                <p className="text-lg">We take everyone who fills out this information very seriously. You are our top priority. Our team is brainstorming for you as we speak. We will be in touch soon!</p>
+            </div>
+            <div className="flex justify-center md:w-1/2 p-8"> <Image src="/assets/Fashion Designer Studio Scene Apr 12 2025 (3).png" alt="Thank You" width={300} height={200} className="rounded-lg" /> </div>
         </div>
-        <div className="w-1/2 flex justify-center"> <Image src="/assets/Fashion Designer Studio Scene Apr 12 2025 (3).png" alt="Thank You" width={300} height={200} className="rounded-lg" /> </div>
-    </div>
-);
+    );
+};
 
 
 
@@ -330,7 +332,7 @@ export default function Home() {
              return (
                  <div className="flex flex-1 flex-col items-center justify-start">
                      <ThankYou />
-                </div>
+                 </div>
              );
          } else {
              // Render other questions with standard padding and question text
