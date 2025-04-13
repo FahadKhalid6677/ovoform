@@ -106,7 +106,7 @@ body {
 
 .choice-button {
     @apply justify-start w-full h-20 font-bold rounded-md shadow-sm
-    bg-muted text-foreground hover:bg-accent hover:text-accent-foreground
+    bg-muted text-foreground hover:bg-accent hover:text-accent-foreground hover:text-white
     transition-colors duration-200;
     font-family: var(--font-poppins);
 }
@@ -117,4 +117,7 @@ body {
 
 .selected-choice {
     @apply bg-secondary text-secondary-foreground;
+}
+.logo-container {
+    @apply flex justify-center items-center p-4;
 }
