@@ -10,17 +10,16 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 // Logo component
-const Logo = () => (
-    <div className="flex justify-center items-center p-4">
-        <Image
-            src="/563x336black.png" // Path to your logo image
-            alt="VentureFlow Navigator Logo"
-            width={150} // Adjust as needed
-            height={40} // Adjust as needed
-            priority
-        />
-    </div>
-);
+const Logo = () => ( <div className="flex justify-center items-center p-4"> <Image src="/assets/Logoblack.png" alt="VentureFlow Navigator Logo" width={90} height={40} priority /> </div> );
+
+
+
+
+
+
+
+
+
 
 const initialQuestions = {
     start: {
@@ -130,24 +129,21 @@ interface Question {
 }
 
 const ThankYou = () => (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4">
-        <h2 className="text-2xl font-semibold mb-4">Thank you for providing the information!</h2>
-        <p className="text-gray-600 mb-6 text-center">We appreciate you completing the questionnaire.</p>
-        <Image
-            src="/563x336black.png" // Replace with your actual image URL
-            alt="Thank You"
-            width={400}
-            height={200}
-            priority
-        />
-        <p className="text-sm mt-4 text-center">Stay tuned for updates and personalized recommendations!</p>
+    <div className="flex min-h-screen bg-background text-foreground items-center">
+        <div className="flex flex-col justify-center w-1/2 pr-8">
+            <h1 className="text-3xl font-bold mb-4">Great things are coming your way!</h1>
+            <p className="text-lg">We take everyone who fills out this information very seriously. You are our top priority. Our team is brainstorming for you as we speak. We will be in touch soon!</p>
+        </div>
+        <div className="w-1/2 flex justify-center"> <Image src="/assets/Fashion Designer Studio Scene Apr 12 2025 (3).png" alt="Thank You" width={300} height={200} className="rounded-lg" /> </div>
     </div>
 );
 
 
+
+
 export default function Home() {
     const [currentQuestionKey, setCurrentQuestionKey] = useState<string>("start");
-    const [formState, setFormState] = useState<{ [key: string]: any }>({});
+    const [formState, setFormState] = useState<{ [key: string]: any }>({ });
     const [isFormComplete, setIsFormComplete] = useState(false);
 
     const currentQuestion = initialQuestions[currentQuestionKey] as Question;
@@ -265,7 +261,7 @@ export default function Home() {
         console.log("Form State:", formState);
     }, [currentQuestionKey, formState]);
 
-    const renderQuestionContent = () => {
+   const renderQuestionContent = () => {
         switch (currentQuestion.type) {
             case "initial":
             case "multipleChoice":
@@ -329,25 +325,25 @@ export default function Home() {
     };
 
     const renderContent = () => {
-        if (currentQuestion.type === "thankYou") {
-            return <ThankYou />;
-        } else {
-            return (
-                <div className="flex flex-1 flex-col items-center justify-start p-4">
-                    <div className="max-w-md w-full flex flex-col">
-                        <div className="p-4">
-                            <div className="text-lg font-semibold">{currentQuestion.question}</div>
-                        </div>
-                        <div className="p-4">{renderQuestionContent()}</div>
-                    </div>
+         if (currentQuestion.type === "thankYou") {
+             // Render ThankYou component with reduced top padding
+             return (
+                 <div className="flex flex-1 flex-col items-center justify-start">
+                     <ThankYou />
                 </div>
-            );
-        }
-    };
+             );
+         } else {
+             // Render other questions with standard padding and question text
+             return (<div className="flex flex-1 flex-col items-center justify-start p-8"> <div className="max-w-md w-full flex flex-col"> <div className="text-lg font-semibold">{currentQuestion.question}</div> <div className="p-4">{renderQuestionContent()}</div> </div> </div>
+             );
+         }
+     };
+
+
 
 
     return (
-        <div className="flex flex-col min-h-screen bg-background">
+        <div className="flex flex-col min-h-screen bg-background ">
             {/* Logo */}
             <Logo />
 
@@ -362,7 +358,7 @@ export default function Home() {
                     >
                         <ChevronsLeft className="h-4 w-4" />
                     </Button>
-                    <Progress value={progress} className="progress-animation" />
+                    <Progress value={progress} className="progress-animation w-1/2" />
                     <div className="text-sm text-muted-foreground">
                         {formType === 'New 🚀'
                             ? `${newCurrentQuestionIndex} / ${newTotalQuestions}`
@@ -372,12 +368,8 @@ export default function Home() {
                     </div>
                 </div>
             </div>
-
-            {/* Question and Options */}
-             <div className="question-container">
-                <div className="question-text">{currentQuestion.question}</div>
-                {renderQuestionContent()}
-            </div>
+            {renderContent()}
         </div>
+
     );
 }
